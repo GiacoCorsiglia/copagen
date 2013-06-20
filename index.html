@@ -6,10 +6,41 @@
   <style>
     body {
       margin: 0;
+      font-family: helvetica, sans-serif;
+      font-size: 14px;
+    }
+
+    header {
+      float: left;
+      width: 100%;
+    }
+
+    h1 {
+      float: left;
+      margin: 0;
+      padding: 15px 22px;
+      background-color: #000;
+      line-height: 38px;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .field {
+      float: left;
+      padding: 15px 22px;
+      border-right: 1px solid #eee;
+    }
+
+    input {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      line-height: 16px;
+      font-size: 12px;
     }
 
     ul#colors {
-      display: block;
+      float: left;
+      clear: left;
       list-style: none;
       margin: 0;
       padding: 0;
@@ -25,18 +56,22 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script src="./chroma.js"></script>
   <script>
-    interval = 30;
-
     $(document).ready(function() {
-      draw($('#hex').val());
+      draw($('#hex').val(), $('#num').val());
 
       $('#hex').keyup(function() {
-        $('#colors').html('');
-        draw($(this).val());
+        draw($(this).val(), $('#num').val());
+      });
+
+      $('#num').keyup(function() {
+        draw($('#hex').val(), $(this).val());
       });
     });
 
-    draw = function(color) {
+    draw = function(color, num) {
+      $('#colors').html('');
+
+      interval = 360 / num;
       base = chroma.color(color);
       hsl = base.hsl();
       above = []; above.push(hsl);
@@ -66,8 +101,20 @@
 </head>
 
 <body>
-  <label for="hex">Color</label>
-  <input id="hex" value="#f00">
+  <header>
+    <h1>CoPaGen</h1>
+
+    <div class="field">
+      <label for="hex">Color</label>
+      <input id="hex" value="#f00">
+    </div>
+
+    <div class="field">
+      <label for="num">Number of colors</label>
+      <input id="num" value="15">
+    </div>
+  </header>
+
   <ul id="colors"></ul>
 </body>
 </html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+  <title>CoPaGen</title>
+
+  <style>
+    body {
+      margin: 0;
+    }
+
+    ul#colors {
+      display: block;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    ul#colors li {
+      float: left;
+      width: 192px;
+      height: 192px;
+    }
+  </style>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script src="./chroma.js"></script>
+  <script>
+    interval = 30;
+
+    $(document).ready(function() {
+      draw($('#hex').val());
+
+      $('#hex').keyup(function() {
+        $('#colors').html('');
+        draw($(this).val());
+      });
+    });
+
+    draw = function(color) {
+      base = chroma.color(color);
+      hsl = base.hsl();
+      above = []; above.push(hsl);
+      below = []; below.push(hsl);
+
+      while (above[above.length - 1][0] < 360) {
+        c = above[above.length - 1].slice(0);
+        c[0] += interval;
+        if (c[0] > 360) c[0] = 360;
+        above.push(c);
+      }
+
+      while (below[0][0] > 0) {
+        c = below[0].slice(0);
+        c[0] -= interval;
+        if (c[0] < 0) c[0] = 0;
+        below.unshift(c);
+      }
+
+      colors = below.concat(above.slice(1, above.length - 1));
+
+      $.each(colors, function() {
+        $('#colors').append('<li style="background-color: ' + chroma.hsl(this).hex() + ';"></li>');
+      });
+    }
+  </script>
+</head>
+
+<body>
+  <label for="hex">Color</label>
+  <input id="hex" value="#f00">
+  <ul id="colors"></ul>
+</body>
+</html>
